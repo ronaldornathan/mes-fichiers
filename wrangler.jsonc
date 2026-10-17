@@ -14,8 +14,15 @@
 	"vars": {
 		"STORAGE_LIMIT_BYTES": "5000000000",
 		"ALERT_BYTES": "4000000000",
-		"ALLOWED_ORIGIN":"https://ronaldornathan.github.io/mes-fichiers/",
+		"ALLOWED_ORIGIN": "https://ronaldornathan.github.io,http://localhost:3000",
 	},
+	"kv_namespaces": [
+		{
+			"binding": "RATE_LIMIT",
+			"id": "b4608663f56842819c7fd9bc42eae503",
+			"remote": true
+		}
+	],
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
