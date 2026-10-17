@@ -7,34 +7,37 @@
 		<link rel="manifest" href="manifest.webmanifest" />
 		<link rel="icon" href="icon-192.png" />
 		<link rel="apple-touch-icon" href="icon-192.png" />
-		<meta name="theme-color" content="#f5f5f7" />
-		<!-- <meta name="apple-mobile-web-app-capable" content="yes" /> -->
+		<meta name="theme-color" content="#1e1e1e" />
 		<meta name="mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-title" content="Fichiers" />
 		<title>Mes fichiers</title>
 		<style>
 			:root {
-				--bg: #f5f5f7;
-				--panel: #fff;
-				--side: #ececf0;
+				--window-bg: #ececec;
+				--sidebar-bg: #e1e1e6;
+				--panel: #ffffff;
 				--text: #1d1d1f;
 				--muted: #6e6e73;
-				--line: #d9d9de;
-				--accent: #0a7aff;
-				--danger: #d93025;
-				--warn: #e8890c;
+				--line: rgba(0, 0, 0, 0.1);
+				--accent: #007aff;
+				--danger: #ff3b30;
+				--warn: #ff9500;
+				--hover: rgba(0, 0, 0, 0.05);
+				--active: rgba(0, 122, 255, 0.15);
 			}
 			@media (prefers-color-scheme: dark) {
 				:root {
-					--bg: #1c1c1e;
-					--panel: #2a2a2d;
-					--side: #232326;
+					--window-bg: #1e1e1e;
+					--sidebar-bg: #252528;
+					--panel: #2d2d30;
 					--text: #f5f5f7;
 					--muted: #98989d;
-					--line: #3a3a3d;
-					--accent: #4c9bff;
-					--danger: #ff6b61;
-					--warn: #ffb340;
+					--line: rgba(255, 255, 255, 0.1);
+					--accent: #0a84ff;
+					--danger: #ff453a;
+					--warn: #ff9f0a;
+					--hover: rgba(255, 255, 255, 0.08);
+					--active: rgba(10, 132, 255, 0.25);
 				}
 			}
 			* {
@@ -44,15 +47,18 @@
 			body {
 				height: 100%;
 				margin: 0;
+				overflow: hidden;
 			}
 			body {
 				font:
-					15px/1.4 -apple-system,
+					13px/1.4 -apple-system,
 					BlinkMacSystemFont,
+					'SF Pro Text',
+					'SF Pro',
 					'Segoe UI',
 					Roboto,
 					sans-serif;
-				background: var(--bg);
+				background: var(--window-bg);
 				color: var(--text);
 			}
 			button,
@@ -64,82 +70,206 @@
 				cursor: pointer;
 				border: 1px solid var(--line);
 				background: var(--panel);
-				border-radius: 8px;
-				padding: 6px 12px;
+				border-radius: 6px;
+				padding: 5px 10px;
+				transition: all 0.1s ease;
+				display: inline-flex;
+				align-items: center;
+				gap: 6px;
+				white-space: nowrap;
 			}
 			button:hover {
-				border-color: var(--accent);
+				background: var(--hover);
 			}
 			button.primary {
 				background: var(--accent);
 				border-color: var(--accent);
 				color: #fff;
 			}
+			button.primary:hover {
+				opacity: 0.9;
+			}
 			[hidden] {
 				display: none !important;
 			}
+
+			/* Conteneur Plein Écran Type macOS */
+			#macos-window {
+				width: 100vw;
+				height: 100vh;
+				background: var(--window-bg);
+				display: flex;
+				flex-direction: column;
+				overflow: hidden;
+			}
+
+			/* Barre de titre macOS */
+			.titlebar {
+				height: 38px;
+				display: flex;
+				align-items: center;
+				padding: 0 14px;
+				position: relative;
+				border-bottom: 1px solid var(--line);
+				background: var(--window-bg);
+				user-select: none;
+				flex-shrink: 0;
+			}
+			.traffic-lights {
+				display: flex;
+				gap: 8px;
+			}
+			.dot {
+				width: 12px;
+				height: 12px;
+				border-radius: 50%;
+				border: 0.5px solid rgba(0, 0, 0, 0.15);
+			}
+			.dot.close {
+				background: #ff5f56;
+				border-color: #e0443e;
+			}
+			.dot.minimize {
+				background: #ffbd2e;
+				border-color: #dea123;
+			}
+			.dot.zoom {
+				background: #27c93f;
+				border-color: #1aab29;
+			}
+
+			.titlebar-title {
+				position: absolute;
+				left: 50%;
+				transform: translateX(-50%);
+				font-weight: 500;
+				font-size: 13px;
+				color: var(--text);
+				display: flex;
+				align-items: center;
+				gap: 6px;
+			}
+
+			/* Écran de connexion */
 			#login {
-				height: 100%;
+				flex: 1;
 				display: flex;
 				align-items: center;
 				justify-content: center;
 				padding: 20px;
+				background: var(--window-bg);
 			}
 			#login form {
 				background: var(--panel);
 				border: 1px solid var(--line);
-				border-radius: 14px;
-				padding: 28px;
+				border-radius: 12px;
+				padding: 32px;
 				width: 100%;
-				max-width: 340px;
+				max-width: 320px;
 				display: flex;
 				flex-direction: column;
-				gap: 12px;
+				gap: 14px;
+				box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+				text-align: center;
 			}
 			#login h1 {
 				margin: 0 0 4px;
-				font-size: 20px;
+				font-size: 18px;
 			}
 			input[type='password'],
 			input[type='search'] {
 				border: 1px solid var(--line);
-				background: var(--bg);
-				border-radius: 8px;
-				padding: 8px 10px;
-				width: 100%;
+				background: var(--panel);
+				border-radius: 6px;
+				padding: 6px 10px;
+				outline: none;
 			}
-			.err {
-				color: var(--danger);
-				min-height: 1.2em;
-				font-size: 13px;
+			input[type='password']:focus,
+			input[type='search']:focus {
+				border-color: var(--accent);
+				box-shadow: 0 0 0 2px var(--active);
 			}
+
+			/* Layout principal */
 			#app {
-				height: 100%;
+				flex: 1;
 				display: flex;
+				min-height: 0;
+				overflow: hidden;
 			}
+
+			/* Sidebar */
 			aside {
 				width: 220px;
-				background: var(--side);
+				background: var(--sidebar-bg);
 				border-right: 1px solid var(--line);
-				padding: 16px;
+				padding: 12px 8px;
 				display: flex;
 				flex-direction: column;
 				gap: 16px;
-				padding-top: max(16px, env(safe-area-inset-top));
+				user-select: none;
+				flex-shrink: 0;
+			}
+			.sidebar-section {
+				display: flex;
+				flex-direction: column;
+				gap: 2px;
 			}
 			aside h2 {
-				margin: 0;
-				font-size: 16px;
+				margin: 0 0 4px 8px;
+				font-size: 11px;
+				text-transform: uppercase;
+				color: var(--muted);
+				letter-spacing: 0.5px;
+				font-weight: 600;
+			}
+			.sidebar-item {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				padding: 6px 8px;
+				border-radius: 6px;
+				cursor: pointer;
+				color: var(--text);
+				font-size: 13px;
+				border: none;
+				background: transparent;
+				width: 100%;
+				text-align: left;
+			}
+			.sidebar-item:hover {
+				background: var(--hover);
+			}
+			.sidebar-item.active {
+				background: var(--active);
+				color: var(--accent);
+				font-weight: 500;
+			}
+			.sidebar-item svg {
+				width: 16px;
+				height: 16px;
+				fill: currentColor;
+				flex-shrink: 0;
+			}
+
+			/* Widget d'utilisation stockage */
+			.usage {
+				margin-top: auto;
+				padding: 10px;
+				background: var(--panel);
+				border-radius: 8px;
+				border: 1px solid var(--line);
 			}
 			.usage small {
 				color: var(--muted);
 				display: block;
 				margin-top: 6px;
+				font-size: 11px;
 			}
 			.track {
-				height: 8px;
+				height: 5px;
 				background: var(--line);
-				border-radius: 4px;
+				border-radius: 3px;
 				overflow: hidden;
 			}
 			#bar {
@@ -151,91 +281,122 @@
 			#bar.warn {
 				background: var(--warn);
 			}
+
+			/* Zone principale */
 			main {
 				flex: 1;
 				display: flex;
 				flex-direction: column;
 				min-width: 0;
+				background: var(--panel);
+				overflow: hidden;
 			}
+
+			/* Toolbar ultra-responsive et toujours visible */
 			.toolbar {
 				display: flex;
 				gap: 8px;
 				align-items: center;
-				flex-wrap: wrap;
-				padding: 12px 16px;
-				padding-top: max(12px, env(safe-area-inset-top));
+				padding: 10px 16px;
 				border-bottom: 1px solid var(--line);
-				background: var(--panel);
+				background: var(--window-bg);
+				flex-shrink: 0;
+				flex-wrap: wrap; /* Permet aux éléments de passer à la ligne proprement si l'écran est trop petit */
 			}
 			.crumbs {
 				display: flex;
 				gap: 2px;
 				flex: 1;
-				min-width: 140px;
-				flex-wrap: wrap;
+				min-width: 120px;
 				align-items: center;
+				overflow-x: auto;
+				white-space: nowrap;
 			}
 			.crumbs button {
 				border: 0;
 				background: none;
-				padding: 4px 6px;
+				padding: 3px 6px;
 				color: var(--accent);
+				font-weight: 500;
 			}
 			.crumbs span {
 				color: var(--muted);
 			}
-			.toolbar input[type='search'] {
-				width: 160px;
+			.toolbar-actions {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				flex-wrap: wrap;
 			}
+			.toolbar input[type='search'] {
+				width: 150px;
+				font-size: 12px;
+				background: var(--panel);
+			}
+
 			#alert {
 				background: var(--warn);
 				color: #000;
 				padding: 8px 16px;
-				font-size: 14px;
+				font-size: 12px;
+				font-weight: 500;
+				flex-shrink: 0;
 			}
+
 			#content {
 				flex: 1;
-				overflow: auto;
-				padding-bottom: env(safe-area-inset-bottom);
+				overflow-y: auto;
+				padding: 16px;
+				background: var(--panel);
 			}
 			#content.drag {
 				outline: 2px dashed var(--accent);
 				outline-offset: -8px;
+				background: var(--active);
 			}
+
+			/* Grille et liste */
 			.grid {
 				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-				gap: 12px;
-				padding: 16px;
+				grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+				gap: 16px;
 			}
 			.item {
 				position: relative;
-				background: var(--panel);
-				border: 1px solid var(--line);
-				border-radius: 12px;
-				padding: 14px 8px 10px;
+				border-radius: 8px;
+				padding: 10px 6px;
 				text-align: center;
 				cursor: pointer;
-				min-width: 0;
+				border: 1px solid transparent;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 6px;
+				user-select: none;
 			}
-			.item:hover,
-			.item:focus-visible {
+			.item:hover {
+				background: var(--hover);
+			}
+			.item:focus-visible,
+			.item.selected {
+				background: var(--active);
 				border-color: var(--accent);
 				outline: 0;
 			}
 			.ico {
-				font-size: 38px;
-				line-height: 1.2;
+				font-size: 42px;
+				line-height: 1;
+				filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
 			}
 			.name {
-				font-size: 13px;
-				margin-top: 4px;
+				font-size: 12px;
+				width: 100%;
 				overflow: hidden;
 				text-overflow: ellipsis;
 				white-space: nowrap;
 			}
 			.meta {
-				font-size: 12px;
+				font-size: 11px;
 				color: var(--muted);
 			}
 			.acts {
@@ -243,33 +404,31 @@
 				top: 4px;
 				right: 4px;
 				display: none;
-				gap: 4px;
+				gap: 2px;
 			}
-			.item:hover .acts,
-			.item:focus-within .acts {
+			.item:hover .acts {
 				display: flex;
-			}
-			@media (hover: none) {
-				.acts {
-					display: flex;
-				}
 			}
 			.acts button {
 				padding: 2px 6px;
-				font-size: 13px;
+				font-size: 11px;
+				background: var(--panel);
+				box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 			}
+
+			/* Mode Liste */
 			.list {
-				padding: 8px 16px;
-				display: block;
+				display: flex;
+				flex-direction: column;
+				gap: 2px;
 			}
 			.list .item {
-				display: flex;
+				flex-direction: row;
 				align-items: center;
-				gap: 12px;
 				text-align: left;
-				border-radius: 8px;
-				margin-bottom: 6px;
-				padding: 8px 12px;
+				padding: 6px 10px;
+				border-radius: 6px;
+				gap: 12px;
 			}
 			.list .ico {
 				font-size: 22px;
@@ -277,6 +436,7 @@
 			.list .name {
 				flex: 1;
 				margin: 0;
+				font-weight: 400;
 			}
 			.list .meta {
 				white-space: nowrap;
@@ -285,49 +445,55 @@
 				position: static;
 				display: flex;
 			}
+
 			.empty {
-				padding: 60px 20px;
+				padding: 60px;
 				text-align: center;
 				color: var(--muted);
 			}
+
+			/* Notifications */
 			#status {
 				position: fixed;
-				left: 12px;
-				bottom: max(12px, env(safe-area-inset-bottom));
+				right: 20px;
+				bottom: 20px;
 				display: flex;
 				flex-direction: column;
-				gap: 6px;
+				gap: 8px;
 				z-index: 20;
 			}
 			#status div {
-				background: var(--text);
-				color: var(--bg);
-				padding: 8px 12px;
-				border-radius: 8px;
-				font-size: 13px;
-				max-width: 80vw;
+				background: rgba(40, 40, 40, 0.85);
+				backdrop-filter: blur(12px);
+				color: #fff;
+				padding: 10px 16px;
+				border-radius: 10px;
+				font-size: 12px;
+				box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
 			}
+
+			/* QuickLook (Aperçu) */
 			#preview {
 				position: fixed;
 				inset: 0;
-				background: rgba(0, 0, 0, 0.8);
+				background: rgba(0, 0, 0, 0.65);
+				backdrop-filter: blur(25px);
+				-webkit-backdrop-filter: blur(25px);
 				z-index: 10;
 				display: flex;
 				flex-direction: column;
-				padding: max(12px, env(safe-area-inset-top)) 12px 12px;
+				padding: 28px;
 			}
 			#preview header {
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
 				color: #fff;
-				gap: 8px;
-				margin-bottom: 8px;
+				margin-bottom: 14px;
 			}
 			#preview header span {
-				overflow: hidden;
-				text-overflow: ellipsis;
-				white-space: nowrap;
+				font-weight: 500;
+				font-size: 14px;
 			}
 			#pbody {
 				flex: 1;
@@ -339,74 +505,94 @@
 			#pbody img,
 			#pbody video,
 			#pbody iframe {
-				max-width: 100%;
-				max-height: 100%;
-				border: 0;
+				max-width: 90%;
+				max-height: 85vh;
 				border-radius: 8px;
+				box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
 			}
 			#pbody iframe {
 				width: 100%;
 				height: 100%;
 				background: #fff;
 			}
-			@media (max-width: 700px) {
-				#app {
-					flex-direction: column;
-				}
+
+			/* Adaptation mobile fluide : masquage de la sidebar latérale pour laisser tout l'espace */
+			@media (max-width: 768px) {
 				aside {
-					width: auto;
-					flex-direction: row;
-					align-items: center;
-					gap: 12px;
-					padding: 8px 12px;
-					padding-top: max(8px, env(safe-area-inset-top));
-				}
-				aside h2 {
 					display: none;
 				}
-				aside .usage {
-					flex: 1;
-				}
 				.toolbar {
-					padding-top: 8px;
+					padding: 8px 10px;
 				}
 				.toolbar input[type='search'] {
-					width: 100%;
+					width: 120px;
 				}
 			}
 		</style>
 	</head>
 	<body>
-		<div id="login">
-			<form id="loginForm">
-				<h1>Mes fichiers</h1>
-				<input id="pw" type="password" placeholder="Mot de passe" autocomplete="current-password" required />
-				<button class="primary" type="submit">Se connecter</button>
-				<div class="err" id="loginErr"></div>
-			</form>
-		</div>
+		<div id="macos-window">
+			<div class="titlebar">
+				<div class="traffic-lights">
+					<div class="dot close"></div>
+					<div class="dot minimize"></div>
+					<div class="dot zoom"></div>
+				</div>
+				<div class="titlebar-title" id="windowTitle">
+					<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+						<path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z" />
+					</svg>
+				</div>
+			</div>
 
-		<div id="app" hidden>
-			<aside>
-				<h2>📂 Mes fichiers</h2>
-				<div class="usage">
-					<div class="track"><div id="bar"></div></div>
-					<small id="usageTxt">…</small>
-				</div>
-				<button id="logout">Déconnexion</button>
-			</aside>
-			<main>
-				<div class="toolbar">
-					<div class="crumbs" id="crumbs"></div>
-					<input id="q" type="search" placeholder="Rechercher" />
-					<button id="viewBtn" title="Changer l'affichage">☷ Liste</button>
-					<button id="newFolder">Nouveau dossier</button>
-					<button id="uploadBtn" class="primary">Envoyer</button>
-					<input id="pick" type="file" multiple hidden />
-				</div>
-				<div id="alert" hidden></div>
-				<div id="content"></div>
-			</main>
+			<div id="login">
+				<form id="loginForm">
+					<h1>📁 Mes fichiers</h1>
+					<input id="pw" type="password" placeholder="Mot de passe" autocomplete="current-password" required />
+					<button class="primary" type="submit">Se connecter</button>
+					<div class="err" id="loginErr"></div>
+				</form>
+			</div>
+
+			<div id="app" hidden>
+				<aside>
+					<div class="sidebar-section">
+						<h2>Favoris</h2>
+						<button class="sidebar-item active">
+							<svg viewBox="0 0 24 24">
+								<path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z" />
+							</svg>
+							Mes fichiers
+						</button>
+					</div>
+					<div class="usage">
+						<div class="track"><div id="bar"></div></div>
+						<small id="usageTxt">…</small>
+					</div>
+					<button class="sidebar-item" id="logout" style="color: var(--danger); margin-top: 4px">
+						<svg viewBox="0 0 24 24">
+							<path
+								d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.1 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
+							/>
+						</svg>
+						Déconnexion
+					</button>
+				</aside>
+				<main>
+					<div class="toolbar">
+						<div class="crumbs" id="crumbs"></div>
+						<div class="toolbar-actions">
+							<input id="q" type="search" placeholder="Rechercher" />
+							<button id="viewBtn" title="Changer l'affichage">☷ Liste</button>
+							<button id="newFolder">Nouveau dossier</button>
+							<button id="uploadBtn" class="primary">Envoyer</button>
+							<input id="pick" type="file" multiple hidden />
+						</div>
+					</div>
+					<div id="alert" hidden></div>
+					<div id="content"></div>
+				</main>
+			</div>
 		</div>
 
 		<div id="preview" hidden>
@@ -419,7 +605,6 @@
 		<div id="status"></div>
 
 		<script>
-			// ⚠️ Remplace par l'adresse de ton Worker (sans slash final)
 			const API_URL = 'https://mes-fichiers.ronaldornathan.workers.dev';
 
 			const $ = (s) => document.querySelector(s);
@@ -488,7 +673,6 @@
 				return data;
 			}
 
-			// ---------- session ----------
 			function logout() {
 				token = '';
 				try {
@@ -496,6 +680,8 @@
 				} catch {}
 				$('#app').hidden = true;
 				$('#login').hidden = false;
+				$('#windowTitle').innerHTML =
+					'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg> Connexion';
 			}
 
 			$('#loginForm').addEventListener('submit', async (e) => {
@@ -522,11 +708,12 @@
 			function start() {
 				$('#login').hidden = true;
 				$('#app').hidden = false;
+				$('#windowTitle').innerHTML =
+					'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg> Mes fichiers';
 				load('');
 				refreshUsage();
 			}
 
-			// ---------- données ----------
 			async function load(p = prefix) {
 				try {
 					const d = await api('/api/files?prefix=' + encodeURIComponent(p));
@@ -553,7 +740,6 @@
 				} catch {}
 			}
 
-			// ---------- affichage ----------
 			function render() {
 				const crumbs = $('#crumbs');
 				crumbs.replaceChildren(el('button', { onclick: () => load('') }, 'Mes fichiers'));
@@ -639,7 +825,6 @@
 				render();
 			});
 
-			// ---------- actions ----------
 			async function signedUrl(key, inline) {
 				return (await api('/api/download-url', { method: 'POST', body: JSON.stringify({ key, inline }) })).url;
 			}
@@ -707,7 +892,6 @@
 				}
 			});
 
-			// ---------- envoi ----------
 			function put(url, file, onProgress) {
 				return new Promise((resolve, reject) => {
 					const x = new XMLHttpRequest();

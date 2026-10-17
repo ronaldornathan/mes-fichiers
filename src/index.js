@@ -62,7 +62,6 @@ function sameBytes(a, b) {
 	return diff === 0;
 }
 
-// Comparaison à temps constant (on compare les empreintes HMAC, de même longueur)
 async function safeEqual(secret, a, b) {
 	return sameBytes(await hmac(secret, a), await hmac(secret, b));
 }
@@ -115,7 +114,6 @@ function validKey(key) {
 	);
 }
 
-// Lien signé temporaire : le navigateur parle directement à Tigris
 async function presign(env, method, key, extraParams = {}) {
 	const url = new URL(objectUrl(env, key));
 	url.searchParams.set('X-Amz-Expires', String(SIGNED_URL_TTL));
@@ -206,7 +204,7 @@ async function login(request, env) {
 	} catch {
 		return json({ error: 'Requête invalide' }, 400);
 	}
-	const ok = typeof body.password === 'string' && (await safeEqual(env.JWT_SECRET, body.password, env.APP_PASSWORD,env.RATE_LIMIT));
+	const ok = typeof body.password === 'string' && (await safeEqual(env.JWT_SECRET, body.password, env.APP_PASSWORD));
 	if (!ok) {
 		await env.RATE_LIMIT.put(failKey, String(failures + 1), { expirationTtl: LOCK_SECONDS });
 		await new Promise((r) => setTimeout(r, 1000));
@@ -221,7 +219,7 @@ async function route(request, env) {
 	const { pathname, searchParams } = url;
 	const method = request.method;
 
-	const required = ['TIGRIS_ACCESS_KEY_ID', 'TIGRIS_SECRET_ACCESS_KEY', 'BUCKET_NAME', 'JWT_SECRET', 'APP_PASSWORD','RATE_LIMIT'];
+	const required = ['TIGRIS_ACCESS_KEY_ID', 'TIGRIS_SECRET_ACCESS_KEY', 'BUCKET_NAME', 'JWT_SECRET', 'APP_PASSWORD', 'RATE_LIMIT'];
 	if (required.some((name) => !env[name])) {
 		return json({ error: 'Configuration incomplète (secrets manquants)' }, 500);
 	}
@@ -232,7 +230,6 @@ async function route(request, env) {
 	const auth = (request.headers.get('Authorization') || '').replace(/^Bearer /, '');
 	if (!(await verifyToken(env, auth))) return json({ error: 'Non autorisé' }, 401);
 
-	// Liste d'un dossier
 	if (pathname === '/api/files' && method === 'GET') {
 		const prefix = searchParams.get('prefix') || '';
 		if (prefix && !(validKey(prefix) && prefix.endsWith('/'))) {
@@ -254,7 +251,6 @@ async function route(request, env) {
 		});
 	}
 
-	// Suppression d'un fichier
 	if (pathname === '/api/files' && method === 'DELETE') {
 		const key = searchParams.get('key');
 		if (!validKey(key)) return json({ error: 'Clé invalide' }, 400);
@@ -263,7 +259,6 @@ async function route(request, env) {
 		return json({ deleted: key });
 	}
 
-	// Création d'un dossier (un fichier vide .keep matérialise le dossier)
 	if (pathname === '/api/folders' && method === 'POST') {
 		const { prefix } = await request.json().catch(() => ({}));
 		if (!(validKey(prefix) && prefix.endsWith('/'))) {
@@ -277,7 +272,6 @@ async function route(request, env) {
 		return json({ created: prefix });
 	}
 
-	// Lien d'envoi (upload) — refuse si le quota serait dépassé
 	if (pathname === '/api/upload-url' && method === 'POST') {
 		const { key, size } = await request.json().catch(() => ({}));
 		if (!validKey(key) || key.endsWith('/')) return json({ error: 'Clé invalide' }, 400);
@@ -293,7 +287,6 @@ async function route(request, env) {
 		});
 	}
 
-	// Lien de téléchargement (ou d'aperçu si inline = true)
 	if (pathname === '/api/download-url' && method === 'POST') {
 		const { key, inline } = await request.json().catch(() => ({}));
 		if (!validKey(key)) return json({ error: 'Clé invalide' }, 400);
@@ -305,7 +298,6 @@ async function route(request, env) {
 		});
 	}
 
-	// Jauge de stockage + alerte
 	if (pathname === '/api/usage' && method === 'GET') return json(await usage(env));
 
 	return json({ error: 'Introuvable' }, 404);
