@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Mes fichiers</title>
+<style>
+:root{--bg:#f5f5f7;--panel:#fff;--side:#ececf0;--text:#1d1d1f;--muted:#6e6e73;--line:#d9d9de;--accent:#0a7aff;--danger:#d93025;--warn:#e8890c}
+@media (prefers-color-scheme:dark){:root{--bg:#1c1c1e;--panel:#2a2a2d;--side:#232326;--text:#f5f5f7;--muted:#98989d;--line:#3a3a3d;--accent:#4c9bff;--danger:#ff6b61;--warn:#ffb340}}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font:15px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:6px 12px}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+[hidden]{display:none!important}
+#login{height:100%;display:flex;align-items:center;justify-content:center;padding:20px}
+#login form{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:28px;width:100%;max-width:340px;display:flex;flex-direction:column;gap:12px}
+#login h1{margin:0 0 4px;font-size:20px}
+input[type=password],input[type=search]{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:8px 10px;width:100%}
+.err{color:var(--danger);min-height:1.2em;font-size:13px}
+#app{height:100%;display:flex}
+aside{width:220px;background:var(--side);border-right:1px solid var(--line);padding:16px;display:flex;flex-direction:column;gap:16px;padding-top:max(16px,env(safe-area-inset-top))}
+aside h2{margin:0;font-size:16px}
+.usage small{color:var(--muted);display:block;margin-top:6px}
+.track{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+#bar{height:100%;width:0;background:var(--accent);transition:width .3s}
+#bar.warn{background:var(--warn)}
+main{flex:1;display:flex;flex-direction:column;min-width:0}
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top));border-bottom:1px solid var(--line);background:var(--panel)}
+.crumbs{display:flex;gap:2px;flex:1;min-width:140px;flex-wrap:wrap;align-items:center}
+.crumbs button{border:0;background:none;padding:4px 6px;color:var(--accent)}
+.crumbs span{color:var(--muted)}
+.toolbar input[type=search]{width:160px}
+#alert{background:var(--warn);color:#000;padding:8px 16px;font-size:14px}
+#content{flex:1;overflow:auto;padding-bottom:env(safe-area-inset-bottom)}
+#content.drag{outline:2px dashed var(--accent);outline-offset:-8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;padding:16px}
+.item{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 8px 10px;text-align:center;cursor:pointer;min-width:0}
+.item:hover,.item:focus-visible{border-color:var(--accent);outline:0}
+.ico{font-size:38px;line-height:1.2}
+.name{font-size:13px;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.meta{font-size:12px;color:var(--muted)}
+.acts{position:absolute;top:4px;right:4px;display:none;gap:4px}
+.item:hover .acts,.item:focus-within .acts{display:flex}
+@media (hover:none){.acts{display:flex}}
+.acts button{padding:2px 6px;font-size:13px}
+.list{padding:8px 16px;display:block}
+.list .item{display:flex;align-items:center;gap:12px;text-align:left;border-radius:8px;margin-bottom:6px;padding:8px 12px}
+.list .ico{font-size:22px}
+.list .name{flex:1;margin:0}
+.list .meta{white-space:nowrap}
+.list .acts{position:static;display:flex}
+.empty{padding:60px 20px;text-align:center;color:var(--muted)}
+#status{position:fixed;left:12px;bottom:max(12px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:6px;z-index:20}
+#status div{background:var(--text);color:var(--bg);padding:8px 12px;border-radius:8px;font-size:13px;max-width:80vw}
+#preview{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:10;display:flex;flex-direction:column;padding:max(12px,env(safe-area-inset-top)) 12px 12px}
+#preview header{display:flex;justify-content:space-between;align-items:center;color:#fff;gap:8px;margin-bottom:8px}
+#preview header span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#pbody{flex:1;display:flex;align-items:center;justify-content:center;min-height:0}
+#pbody img,#pbody video,#pbody iframe{max-width:100%;max-height:100%;border:0;border-radius:8px}
+#pbody iframe{width:100%;height:100%;background:#fff}
+@media (max-width:700px){
+ #app{flex-direction:column}
+ aside{width:auto;flex-direction:row;align-items:center;gap:12px;padding:8px 12px;padding-top:max(8px,env(safe-area-inset-top))}
+ aside h2{display:none}
+ aside .usage{flex:1}
+ .toolbar{padding-top:8px}
+ .toolbar input[type=search]{width:100%}
+}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <form id="loginForm">
+    <h1>Mes fichiers</h1>
+    <input id="pw" type="password" placeholder="Mot de passe" autocomplete="current-password" required>
+    <button class="primary" type="submit">Se connecter</button>
+    <div class="err" id="loginErr"></div>
+  </form>
+</div>
+
+<div id="app" hidden>
+  <aside>
+    <h2>📂 Mes fichiers</h2>
+    <div class="usage">
+      <div class="track"><div id="bar"></div></div>
+      <small id="usageTxt">…</small>
+    </div>
+    <button id="logout">Déconnexion</button>
+  </aside>
+  <main>
+    <div class="toolbar">
+      <div class="crumbs" id="crumbs"></div>
+      <input id="q" type="search" placeholder="Rechercher">
+      <button id="viewBtn" title="Changer l'affichage">☷ Liste</button>
+      <button id="newFolder">Nouveau dossier</button>
+      <button id="uploadBtn" class="primary">Envoyer</button>
+      <input id="pick" type="file" multiple hidden>
+    </div>
+    <div id="alert" hidden></div>
+    <div id="content"></div>
+  </main>
+</div>
+
+<div id="preview" hidden>
+  <header><span id="ptitle"></span><div><button id="pdl">Télécharger</button> <button id="pclose">Fermer</button></div></header>
+  <div id="pbody"></div>
+</div>
+<div id="status"></div>
+
+<script>
+// ⚠️ Remplace par l'adresse de ton Worker (sans slash final)
+const API_URL = "https://mes-fichiers.ronaldornathan.workers.dev";
+
+const $ = (s) => document.querySelector(s);
+let token = "";
+try { token = localStorage.getItem("fm_token") || ""; } catch {}
+let prefix = "", folders = [], files = [], view = "grid", query = "", previewKey = "";
+
+function el(tag, props = {}, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(props)) {
+    if (k === "class") e.className = v;
+    else if (k.startsWith("on")) e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v);
+  }
+  e.append(...kids);
+  return e;
+}
+
+function toast(msg, ms = 4000) {
+  const t = el("div", {}, msg);
+  $("#status").append(t);
+  if (ms) setTimeout(() => t.remove(), ms);
+  return t;
+}
+
+function fmtSize(n) {
+  if (n < 1024) return n + " o";
+  const u = ["Ko", "Mo", "Go", "To"];
+  let i = -1;
+  do { n /= 1024; i++; } while (n >= 1024 && i < u.length - 1);
+  return n.toFixed(n < 10 ? 1 : 0) + " " + u[i];
+}
+
+function kind(name) {
+  const e = (name.split(".").pop() || "").toLowerCase();
+  if (["png", "jpg", "jpeg", "gif", "webp", "svg", "avif"].includes(e)) return "img";
+  if (e === "pdf") return "pdf";
+  if (["mp4", "webm", "mov"].includes(e)) return "vid";
+  if (["mp3", "wav", "ogg", "m4a", "flac"].includes(e)) return "aud";
+  if (["zip", "rar", "7z", "tar", "gz"].includes(e)) return "zip";
+  return "file";
+}
+const ICONS = { folder: "📁", img: "🖼️", pdf: "📕", vid: "🎞️", aud: "🎵", zip: "🗜️", file: "📄" };
+
+async function api(path, opts = {}) {
+  const res = await fetch(API_URL + path, {
+    ...opts,
+    headers: { "Content-Type": "application/json", ...(token ? { Authorization: "Bearer " + token } : {}) },
+  });
+  if (res.status === 401 && path !== "/api/login") { logout(); throw new Error("Session expirée, reconnecte-toi"); }
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || "Erreur " + res.status);
+  return data;
+}
+
+// ---------- session ----------
+function logout() {
+  token = "";
+  try { localStorage.removeItem("fm_token"); } catch {}
+  $("#app").hidden = true;
+  $("#login").hidden = false;
+}
+
+$("#loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  $("#loginErr").textContent = "";
+  if (API_URL.includes("TON-SOUS-DOMAINE")) { $("#loginErr").textContent = "Configure API_URL dans le fichier."; return; }
+  try {
+    const d = await api("/api/login", { method: "POST", body: JSON.stringify({ password: $("#pw").value }) });
+    token = d.token;
+    try { localStorage.setItem("fm_token", token); } catch {}
+    $("#pw").value = "";
+    start();
+  } catch (err) { $("#loginErr").textContent = err.message; }
+});
+$("#logout").addEventListener("click", logout);
+
+function start() {
+  $("#login").hidden = true;
+  $("#app").hidden = false;
+  load("");
+  refreshUsage();
+}
+
+// ---------- données ----------
+async function load(p = prefix) {
+  try {
+    const d = await api("/api/files?prefix=" + encodeURIComponent(p));
+    prefix = p; folders = d.folders; files = d.files; query = ""; $("#q").value = "";
+    render();
+  } catch (e) { toast(e.message); }
+}
+
+async function refreshUsage() {
+  try {
+    const u = await api("/api/usage");
+    $("#bar").style.width = Math.min(u.percent, 100) + "%";
+    $("#bar").className = u.alert ? "warn" : "";
+    $("#usageTxt").textContent = fmtSize(u.used) + " sur " + fmtSize(u.limit) + " (" + u.percent + " %)";
+    $("#alert").hidden = !u.alert;
+    $("#alert").textContent = "Attention : tu approches de la limite de stockage (" + fmtSize(u.used) + " utilisés). Pense à faire du tri.";
+  } catch {}
+}
+
+// ---------- affichage ----------
+function render() {
+  const crumbs = $("#crumbs");
+  crumbs.replaceChildren(el("button", { onclick: () => load("") }, "Mes fichiers"));
+  let acc = "";
+  for (const seg of prefix.split("/").filter(Boolean)) {
+    acc += seg + "/";
+    const target = acc;
+    crumbs.append(el("span", {}, "›"), el("button", { onclick: () => load(target) }, seg));
+  }
+
+  const q = query.toLowerCase();
+  const fo = folders.filter((f) => f.name.toLowerCase().includes(q)).sort((a, b) => a.name.localeCompare(b.name));
+  const fi = files.filter((f) => f.name.toLowerCase().includes(q)).sort((a, b) => a.name.localeCompare(b.name));
+  const box = el("div", { class: view === "grid" ? "grid" : "list" });
+
+  for (const f of fo) {
+    box.append(el("div", { class: "item", tabindex: "0", onclick: () => load(f.prefix) },
+      el("div", { class: "ico" }, ICONS.folder), el("div", { class: "name", title: f.name }, f.name)));
+  }
+  for (const f of fi) {
+    const acts = el("div", { class: "acts" },
+      el("button", { title: "Télécharger", onclick: (e) => { e.stopPropagation(); download(f.key); } }, "⬇"),
+      el("button", { title: "Supprimer", onclick: (e) => { e.stopPropagation(); remove(f); } }, "🗑"));
+    box.append(el("div", { class: "item", tabindex: "0", onclick: () => openFile(f) },
+      el("div", { class: "ico" }, ICONS[kind(f.name)]),
+      el("div", { class: "name", title: f.name }, f.name),
+      el("div", { class: "meta" }, fmtSize(f.size) + (view === "list" ? " · " + new Date(f.lastModified).toLocaleDateString("fr-FR") : "")),
+      acts));
+  }
+  const content = $("#content");
+  content.replaceChildren(fo.length + fi.length ? box : el("div", { class: "empty" },
+    query ? "Aucun résultat." : "Dossier vide. Glisse des fichiers ici ou clique sur « Envoyer »."));
+}
+
+$("#q").addEventListener("input", (e) => { query = e.target.value; render(); });
+$("#viewBtn").addEventListener("click", () => {
+  view = view === "grid" ? "list" : "grid";
+  $("#viewBtn").textContent = view === "grid" ? "☷ Liste" : "▦ Grille";
+  render();
+});
+
+// ---------- actions ----------
+async function signedUrl(key, inline) {
+  return (await api("/api/download-url", { method: "POST", body: JSON.stringify({ key, inline }) })).url;
+}
+
+async function download(key) {
+  try {
+    const a = el("a", { href: await signedUrl(key, false) });
+    document.body.append(a); a.click(); a.remove();
+  } catch (e) { toast(e.message); }
+}
+
+async function openFile(f) {
+  const k = kind(f.name);
+  if (!["img", "pdf", "vid", "aud"].includes(k)) return download(f.key);
+  try {
+    const url = await signedUrl(f.key, true);
+    const node = k === "img" ? el("img", { src: url, alt: f.name })
+      : k === "pdf" ? el("iframe", { src: url })
+      : el(k === "vid" ? "video" : "audio", { src: url, controls: "" });
+    previewKey = f.key;
+    $("#ptitle").textContent = f.name;
+    $("#pbody").replaceChildren(node);
+    $("#preview").hidden = false;
+  } catch (e) { toast(e.message); }
+}
+function closePreview() { $("#preview").hidden = true; $("#pbody").replaceChildren(); }
+$("#pclose").addEventListener("click", closePreview);
+$("#pdl").addEventListener("click", () => download(previewKey));
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closePreview(); });
+
+async function remove(f) {
+  if (!confirm("Supprimer « " + f.name + " » définitivement ?")) return;
+  try {
+    await api("/api/files?key=" + encodeURIComponent(f.key), { method: "DELETE" });
+    toast("Supprimé : " + f.name);
+    await load(); refreshUsage();
+  } catch (e) { toast(e.message); }
+}
+
+$("#newFolder").addEventListener("click", async () => {
+  const name = (prompt("Nom du dossier :") || "").trim().replace(/[\/\\]/g, "");
+  if (!name) return;
+  try {
+    await api("/api/folders", { method: "POST", body: JSON.stringify({ prefix: prefix + name + "/" }) });
+    load();
+  } catch (e) { toast(e.message); }
+});
+
+// ---------- envoi ----------
+function put(url, file, onProgress) {
+  return new Promise((resolve, reject) => {
+    const x = new XMLHttpRequest();
+    x.open("PUT", url);
+    x.upload.onprogress = (e) => e.lengthComputable && onProgress(Math.round((e.loaded / e.total) * 100));
+    x.onload = () => (x.status < 300 ? resolve() : reject(new Error("Échec de l'envoi (" + x.status + ")")));
+    x.onerror = () => reject(new Error("Envoi bloqué : vérifie le CORS du bucket"));
+    x.send(file);
+  });
+}
+
+async function upload(list) {
+  for (const f of list) {
+    const row = toast("Envoi : " + f.name + " 0 %", 0);
+    try {
+      const d = await api("/api/upload-url", { method: "POST", body: JSON.stringify({ key: prefix + f.name, size: f.size }) });
+      await put(d.url, f, (p) => (row.textContent = "Envoi : " + f.name + " " + p + " %"));
+      row.textContent = "Envoyé : " + f.name;
+    } catch (e) { row.textContent = f.name + " : " + e.message; }
+    setTimeout(() => row.remove(), 4000);
+  }
+  await load(); refreshUsage();
+}
+
+$("#uploadBtn").addEventListener("click", () => $("#pick").click());
+$("#pick").addEventListener("change", (e) => { upload([...e.target.files]); e.target.value = ""; });
+
+const content = $("#content");
+content.addEventListener("dragover", (e) => { e.preventDefault(); content.classList.add("drag"); });
+content.addEventListener("dragleave", () => content.classList.remove("drag"));
+content.addEventListener("drop", (e) => {
+  e.preventDefault(); content.classList.remove("drag");
+  const list = [...e.dataTransfer.files].filter((f) => f.size > 0 || f.type);
+  if (list.length) upload(list);
+});
+
+if (token) start();
+</script>
+</body>
+</html>
