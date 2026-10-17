@@ -14,6 +14,7 @@
 	"vars": {
 		"STORAGE_LIMIT_BYTES": "5000000000",
 		"ALERT_BYTES": "4000000000",
+		"ALLOWED_ORIGIN":"https://ronaldornathan.github.io/mes-fichiers/",
 	},
 	/**
 	 * Smart Placement
